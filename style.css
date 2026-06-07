@@ -1,0 +1,569 @@
+/* ==================================================
+   PAC-MAN ULTRA ARCADE EDITION
+   Responsive Mobile + Desktop
+   ================================================== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
+}
+
+#gameBoard{
+    width:fit-content;
+    max-width:95vw;
+    margin:auto;
+}
+
+:root{
+    --bg:#050816;
+    --bg2:#09142b;
+    --cyan:#00e5ff;
+    --yellow:#ffd600;
+    --blue:#3457ff;
+    --white:#ffffff;
+}
+
+html,
+body{
+    width:100%;
+    min-height:100vh;
+    overflow-x:hidden;
+}
+
+body{
+    font-family:Arial, Helvetica, sans-serif;
+    background:
+    radial-gradient(circle at top,#1a237e 0%,#050816 40%),
+    linear-gradient(180deg,#050816,#09142b);
+    color:rgb(255, 255, 255);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:15px;
+    position:relative;
+}
+
+/* =========================
+   Animated Starfield
+   ========================= */
+
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background-image:
+    radial-gradient(white 1px,transparent 1px);
+    background-size:40px 40px;
+    opacity:.15;
+    animation:stars 30s linear infinite;
+    pointer-events:none;
+}
+
+@keyframes stars{
+    from{
+        transform:translateY(0);
+    }
+    to{
+        transform:translateY(120px);
+    }
+}
+
+/* =========================
+   Container
+   ========================= */
+
+.game-container{
+    width:100%;
+    max-width:760px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:18px;
+    z-index:2;
+}
+
+/* =========================
+   Title
+   ========================= */
+
+.title{
+    font-size:3rem;
+    font-weight:900;
+    letter-spacing:5px;
+    color:var(--yellow);
+
+    text-shadow:
+    0 0 10px var(--yellow),
+    0 0 20px var(--yellow),
+    0 0 40px var(--yellow),
+    0 0 80px var(--yellow);
+}
+
+/* =========================
+   HUD
+   ========================= */
+
+.hud{
+    width:100%;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    padding:15px 20px;
+
+    border-radius:18px;
+
+    background:rgba(255,255,255,.08);
+
+    border:1px solid rgba(255,255,255,.15);
+
+    backdrop-filter:blur(18px);
+
+    box-shadow:
+    0 10px 30px rgba(0,0,0,.45);
+}
+
+.hud h2{
+    font-size:1.3rem;
+    color:var(--yellow);
+
+    text-shadow:
+    0 0 10px var(--yellow),
+    0 0 20px var(--yellow);
+}
+
+#score{
+    display:inline-block;
+}
+
+/* =========================
+   Restart Button
+   ========================= */
+
+#restartBtn{
+    border:none;
+    outline:none;
+    cursor:pointer;
+
+    padding:12px 20px;
+
+    border-radius:12px;
+
+    font-weight:700;
+
+    color:white;
+
+    background:
+    linear-gradient(
+    135deg,
+    #3f51ff,
+    #00e5ff);
+
+    box-shadow:
+    0 0 15px rgba(0, 229, 255, 0);
+
+    transition:.25s;
+}
+
+#restartBtn:hover{
+    transform:translateY(-2px);
+}
+
+#restartBtn:active{
+    transform:scale(.95);
+}
+
+/* =========================
+   Board
+   ========================= */
+
+#gameBoard{
+    display:grid;
+
+    background:#000;
+
+    padding:8px;
+
+    border-radius:20px;
+
+    border:4px solid var(--cyan);
+
+    box-shadow:
+    0 0 10px var(--cyan),
+    0 0 30px var(--cyan),
+    0 0 60px rgba(0, 229, 255, 0);
+
+    touch-action:none;
+}
+
+/* =========================
+   Cells
+   ========================= */
+
+.cell{
+    position:relative;
+    overflow:hidden;
+}
+
+/* =========================
+   Walls
+   ========================= */
+
+.wall{
+    background:
+    linear-gradient(
+    135deg,
+    #0ca5dc,
+    #0a8390);
+
+    border-radius:4px;
+
+    box-shadow:
+    inset 0 0 6px rgba(255,255,255,.5),
+    0 0 10px rgba(0,229,255,.8);
+}
+
+/* =========================
+   Dots
+   ========================= */
+
+.dot{
+    position:absolute;
+
+    width:22%;
+    height:22%;
+
+    background:var(--yellow);
+
+    border-radius:50%;
+
+    top:50%;
+    left:50%;
+
+    transform:
+    translate(-50%,-50%);
+
+    box-shadow:
+    0 0 10px var(--yellow),
+    0 0 10px var(--yellow);
+
+    animation:pulse .8s infinite;
+}
+
+@keyframes pulse{
+
+    0%{
+        transform:
+        translate(-50%,-50%)
+        scale(1);
+    }
+
+    50%{
+        transform:
+        translate(-50%,-50%)
+        scale(1.5);
+    }
+
+    100%{
+        transform:
+        translate(-50%,-50%)
+        scale(1);
+    }
+}
+
+/* =========================
+   Pac-Man
+   ========================= */
+
+.pacman{
+    width:100%;
+    height:100%;
+
+    border-radius:50%;
+
+    position:relative;
+
+    overflow:hidden;
+
+    background:
+    radial-gradient(
+    circle at 35% 35%,
+    #fff59d,
+    #ffd600);
+
+    box-shadow:
+    0 0 12px #ffd600,
+    0 0 30px #ffd600;
+
+    transition:.08s linear;
+}
+
+.pacman::before{
+    content:"";
+
+    position:absolute;
+
+    right:-2px;
+    top:50%;
+
+    width:55%;
+    height:55%;
+
+    background:black;
+
+    transform:
+    translateY(-50%);
+
+    clip-path:
+    polygon(
+    100% 50%,
+    0 0,
+    0 100%);
+
+    animation:mouth .18s infinite alternate;
+}
+
+@keyframes mouth{
+
+    from{
+        transform:
+        translateY(-50%)
+        rotate(0deg);
+    }
+
+    to{
+        transform:
+        translateY(-50%)
+        rotate(25deg);
+    }
+}
+
+/* =========================
+   Ghosts
+   ========================= */
+
+.ghost{
+    width:100%;
+    height:100%;
+
+    position:relative;
+
+    border-radius:
+    50% 50% 10% 10%;
+
+    animation:
+    ghostFloat .3s infinite alternate;
+}
+
+@keyframes ghostFloat{
+
+    from{
+        transform:translateY(0);
+    }
+
+    to{
+        transform:translateY(-2px);
+    }
+}
+
+.red{
+    background:#ff3d3d;
+    box-shadow:
+    0 0 15px #ff3d3d;
+}
+
+.pink{
+    background:#ff80ab;
+    box-shadow:
+    0 0 15px #ff80ab;
+}
+
+.cyan{
+    background:#18ffff;
+    box-shadow:
+    0 0 15px #18ffff;
+}
+
+.orange{
+    background:#ff9100;
+    box-shadow:
+    0 0 15px #ff9100;
+}
+
+.ghost::after{
+    content:"";
+
+    position:absolute;
+
+    bottom:-2px;
+
+    width:100%;
+    height:18%;
+
+    background:inherit;
+}
+
+
+/* =========================
+   Popup Overlay
+   ========================= */
+
+.game-over{
+    position:fixed;
+    inset:0;
+
+    background:
+    rgba(0,0,0,.88);
+
+    display:flex;
+
+    justify-content:center;
+    align-items:center;
+
+    z-index:9999;
+}
+
+.popup{
+
+    width:90%;
+    max-width:360px;
+
+    text-align:center;
+
+    padding:30px;
+
+    border-radius:20px;
+
+    background:
+    rgba(18,18,18,.95);
+
+    border:1px solid
+    rgba(255,255,255,.15);
+
+    box-shadow:
+    0 0 40px rgba(0,229,255,.4);
+
+    animation:
+    popupShow .35s ease;
+}
+
+@keyframes popupShow{
+
+    from{
+        opacity:0;
+        transform:scale(.7);
+    }
+
+    to{
+        opacity:1;
+        transform:scale(1);
+    }
+}
+
+.popup h1{
+    margin-bottom:15px;
+    font-size:2rem;
+}
+
+.popup h2{
+    margin-bottom:20px;
+}
+
+.popup button{
+
+    border:none;
+
+    cursor:pointer;
+
+    padding:12px 20px;
+
+    border-radius:12px;
+
+    color:white;
+
+    font-weight:700;
+
+    background:
+    linear-gradient(
+    135deg,
+    #3f51ff,
+    #00e5ff);
+}
+
+.popup button:hover{
+    transform:scale(1.05);
+}
+
+.win{
+    color:#00ff88;
+
+    text-shadow:
+    0 0 15px #00ff88;
+}
+
+.lose{
+    color:#ff5252;
+
+    text-shadow:
+    0 0 15px #ff5252;
+}
+
+/* =========================
+   Score Animation
+   ========================= */
+
+.score-flash{
+    animation:scoreFlash .3s;
+}
+
+@keyframes scoreFlash{
+
+    0%{
+        transform:scale(1);
+    }
+
+    50%{
+        transform:scale(1.3);
+    }
+
+    100%{
+        transform:scale(1);
+    }
+}
+
+/* =========================
+   Responsive
+   ========================= */
+
+@media (max-width:768px){
+
+    body{
+        padding:10px;
+        justify-content:flex-start;
+    }
+
+    .game-container{
+        width:100%;
+        margin-top:15px;
+    }
+
+    .title{
+        font-size:2rem;
+    }
+
+    .hud{
+        padding:12px;
+    }
+
+    .hud h2{
+        font-size:1rem;
+    }
+}
+
+html,
+body{
+    overflow:hidden;
+    touch-action:none;
+}
